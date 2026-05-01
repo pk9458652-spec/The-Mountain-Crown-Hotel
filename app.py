@@ -723,8 +723,10 @@ def handle_feedback():
 
 # ─── Run ─────────────────────────────────────────────────────────────────────
 
+# Initialize DB regardless of how app is run (gunicorn or local)
+init_db()
+
 if __name__ == '__main__':
-    init_db()
     print("\n[OK] The Mountain Crown server is running!")
     print("   Open: http://localhost:5000 or your network IP\n")
     app.run(host='0.0.0.0', debug=True, port=5000)
