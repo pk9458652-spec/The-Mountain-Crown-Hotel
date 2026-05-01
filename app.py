@@ -393,22 +393,8 @@ def create_booking():
         conn.commit()
         conn.close()
 
-        # Prepare details for email
-        booking_details = {
-            'booking_id': booking_id,
-            'name': data['name'],
-            'email': data['email'],
-            'room_name': rt['name'],
-            'room_number': room_number,
-            'check_in': data['check_in'],
-            'check_out': data['check_out'],
-            'guests': data['guests'],
-            'total_amount': total_amount,
-            'payment_method': data['payment_method']
-        }
-        
-        # Send email notification
-        email_sent = send_booking_email(booking_details)
+        # Send email notification disabled per user request
+        email_sent = False
 
         # Automated WhatsApp Notification (Background API Method)
         def send_whatsapp_async(phone, name, b_id, check_in_date, room_number):
@@ -446,19 +432,19 @@ def create_booking():
         threading.Thread(target=send_whatsapp_async, args=(data['phone'], data['name'], booking_id, data['check_in'], room_number), daemon=True).start()
 
         return jsonify({
-
-    threading.Thread(target=send_whatsapp_async, args=(data['phone'], data['name'], booking_id, data['check_in'], room_number), daemon=True).start()
-
-    return jsonify({
-        'success': True,
-        'message': 'Booking confirmed!' + (' Email sent.' if email_sent else ' (Email failed to send)'),
-        'booking_id': booking_id,
-        'transaction_id': txn_id,
-        'total_amount': total_amount,
-        'total_nights': total_nights,
-        'room_name': rt['name'],
-        'room_number': room_number
-    })
+            'success': True,
+            'message': 'Booking confirmed!',
+            'booking_id': booking_id,
+            'transaction_id': txn_id,
+            'total_amount': total_amount,
+            'total_nights': total_nights,
+            'room_name': rt['name'],
+            'room_number': room_number
+        })
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': f'Server Error: {str(e)}'}), 500
 
 # ─── API: Cancel Booking ───────────────────────────────────────────────────
 
