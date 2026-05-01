@@ -99,6 +99,14 @@ Mountain Crown Hotel Team
 # ─── Database Initialization ────────────────────────────────────────────────
 
 def init_db():
+    # Ensure the directory for the DB exists
+    db_dir = os.path.dirname(DB_PATH)
+    if db_dir and not os.path.exists(db_dir):
+        try:
+            os.makedirs(db_dir, exist_ok=True)
+        except Exception as e:
+            print(f"Warning: Could not create directory {db_dir}: {e}")
+            
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
