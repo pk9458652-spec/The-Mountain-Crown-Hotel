@@ -309,138 +309,143 @@ def check_availability():
 
 @app.route('/api/book', methods=['POST'])
 def create_booking():
-    data = request.json
-
-    # Validate required fields
-    required = ['name', 'email', 'phone', 'room_type_id', 'check_in', 'check_out', 'guests', 'payment_method']
-    for field in required:
-        if not data.get(field):
-            return jsonify({'success': False, 'message': f'Missing field: {field}'}), 400
-
     try:
-        check_in  = datetime.strptime(data['check_in'],  '%Y-%m-%d').date()
-        check_out = datetime.strptime(data['check_out'], '%Y-%m-%d').date()
-    except ValueError:
-        return jsonify({'success': False, 'message': 'Invalid date format'}), 400
+        data = request.json
 
-    if check_out <= check_in:
-        return jsonify({'success': False, 'message': 'Check-out must be after check-in'}), 400
+        # Validate required fields
+        required = ['name', 'email', 'phone', 'room_type_id', 'check_in', 'check_out', 'guests', 'payment_method']
+        for field in required:
+            if not data.get(field):
+                return jsonify({'success': False, 'message': f'Missing field: {field}'}), 400
 
-    total_nights = (check_out - check_in).days
-
-    conn = get_db()
-
-    # Get room type price
-    rt = conn.execute('SELECT * FROM room_types WHERE id = ?', (data['room_type_id'],)).fetchone()
-    if not rt:
-        conn.close()
-        return jsonify({'success': False, 'message': 'Room type not found'}), 404
-
-    # Find an available room of this type for the requested dates
-    available_room = conn.execute('''
-        SELECT r.id, r.room_number
-        FROM rooms r
-        WHERE r.room_type_id = ?
-          AND r.id NOT IN (
-              SELECT b.room_id FROM bookings b
-              WHERE b.status != 'cancelled'
-                AND NOT (b.check_out <= ? OR b.check_in >= ?)
-          )
-        LIMIT 1
-    ''', (data['room_type_id'], data['check_in'], data['check_out'])).fetchone()
-
-    if not available_room:
-        conn.close()
-        type_names = {'deluxe': 'Deluxe Rooms', 'executive': 'Executive Suites', 'presidential': 'Presidential Suites'}
-        type_name = type_names.get(rt['type'], 'rooms of this type')
-        return jsonify({
-            'success': False,
-            'message': f'No availability! All {type_name} are fully booked for your selected dates. Please choose a different room type or dates.'
-        }), 409
-
-    room_id      = available_room['id']
-    room_number  = available_room['room_number']
-    total_amount = rt['price_per_night'] * total_nights
-
-    # Save customer
-    cur = conn.execute(
-        'INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)',
-        (data['name'], data['email'], data['phone'])
-    )
-    customer_id = cur.lastrowid
-
-    # Save booking
-    cur = conn.execute(
-        '''INSERT INTO bookings (customer_id, room_id, check_in, check_out, guests, total_nights, total_amount, status)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')''',
-        (customer_id, room_id, data['check_in'], data['check_out'],
-         data['guests'], total_nights, total_amount)
-    )
-    booking_id = cur.lastrowid
-
-    # Generate a fake transaction ID for demo
-    import random, string
-    txn_id = 'TXN' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
-    # Save payment
-    conn.execute(
-        '''INSERT INTO payments (booking_id, amount, payment_method, transaction_id, status)
-           VALUES (?, ?, ?, ?, 'success')''',
-        (booking_id, total_amount, data['payment_method'], txn_id)
-    )
-
-    conn.commit()
-    conn.close()
-
-    # Prepare details for email
-    booking_details = {
-        'booking_id': booking_id,
-        'name': data['name'],
-        'email': data['email'],
-        'room_name': rt['name'],
-        'room_number': room_number,
-        'check_in': data['check_in'],
-        'check_out': data['check_out'],
-        'guests': data['guests'],
-        'total_amount': total_amount,
-        'payment_method': data['payment_method']
-    }
-    
-    # Send email notification
-    email_sent = send_booking_email(booking_details)
-
-    # Automated WhatsApp Notification (Background API Method)
-    def send_whatsapp_async(phone, name, b_id, check_in_date, room_number):
         try:
-            import time
-            number = f"whatsapp:+91{phone}"
-            message = f"Hello {name},\n\nYour booking #{b_id} at The Mountain Crown is confirmed! \nRoom: {room_number}\nCheck-in Date: {check_in_date}\n\nWe look forward to hosting you!"
-            
-            print(f"Queuing background WhatsApp message to {number}...")
-            
-            # ---------------------------------------------------------
-            # REAL API INTEGRATION (Twilio WhatsApp Business API)
-            # ---------------------------------------------------------
-            # To make this physically send messages, uncomment this code 
-            # and use your free Twilio.com API credentials:
-            #
-            # from twilio.rest import Client
-            # TWILIO_SID = "your_twilio_account_sid_here"
-            # TWILIO_AUTH_TOKEN = "your_twilio_auth_token_here"
-            # client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
-            # msg = client.messages.create(
-            #     body=message,
-            #     from_="whatsapp:+14155238886", # Twilio Sandbox Number
-            #     to=number
-            # )
-            # ---------------------------------------------------------
-            
-            # Simulating network delay for background process
-            time.sleep(2)
-            print(f"✅ [SUCCESS] Automated WhatsApp confirmation sent to {number} invisibly!")
-            
-        except Exception as e:
-            print(f"Automated WhatsApp Error: {e}")
+            check_in  = datetime.strptime(data['check_in'],  '%Y-%m-%d').date()
+            check_out = datetime.strptime(data['check_out'], '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'success': False, 'message': 'Invalid date format'}), 400
+
+        if check_out <= check_in:
+            return jsonify({'success': False, 'message': 'Check-out must be after check-in'}), 400
+
+        total_nights = (check_out - check_in).days
+
+        conn = get_db()
+
+        # Get room type price
+        rt = conn.execute('SELECT * FROM room_types WHERE id = ?', (data['room_type_id'],)).fetchone()
+        if not rt:
+            conn.close()
+            return jsonify({'success': False, 'message': 'Room type not found'}), 404
+
+        # Find an available room of this type for the requested dates
+        available_room = conn.execute('''
+            SELECT r.id, r.room_number
+            FROM rooms r
+            WHERE r.room_type_id = ?
+              AND r.id NOT IN (
+                  SELECT b.room_id FROM bookings b
+                  WHERE b.status != 'cancelled'
+                    AND NOT (b.check_out <= ? OR b.check_in >= ?)
+              )
+            LIMIT 1
+        ''', (data['room_type_id'], data['check_in'], data['check_out'])).fetchone()
+
+        if not available_room:
+            conn.close()
+            type_names = {'deluxe': 'Deluxe Rooms', 'executive': 'Executive Suites', 'presidential': 'Presidential Suites'}
+            type_name = type_names.get(rt['type'], 'rooms of this type')
+            return jsonify({
+                'success': False,
+                'message': f'No availability! All {type_name} are fully booked for your selected dates. Please choose a different room type or dates.'
+            }), 409
+
+        room_id      = available_room['id']
+        room_number  = available_room['room_number']
+        total_amount = rt['price_per_night'] * total_nights
+
+        # Save customer
+        cur = conn.execute(
+            'INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)',
+            (data['name'], data['email'], data['phone'])
+        )
+        customer_id = cur.lastrowid
+
+        # Save booking
+        cur = conn.execute(
+            '''INSERT INTO bookings (customer_id, room_id, check_in, check_out, guests, total_nights, total_amount, status)
+               VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')''',
+            (customer_id, room_id, data['check_in'], data['check_out'],
+             data['guests'], total_nights, total_amount)
+        )
+        booking_id = cur.lastrowid
+
+        # Generate a fake transaction ID for demo
+        import random, string
+        txn_id = 'TXN' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+        # Save payment
+        conn.execute(
+            '''INSERT INTO payments (booking_id, amount, payment_method, transaction_id, status)
+               VALUES (?, ?, ?, ?, 'success')''',
+            (booking_id, total_amount, data['payment_method'], txn_id)
+        )
+
+        conn.commit()
+        conn.close()
+
+        # Prepare details for email
+        booking_details = {
+            'booking_id': booking_id,
+            'name': data['name'],
+            'email': data['email'],
+            'room_name': rt['name'],
+            'room_number': room_number,
+            'check_in': data['check_in'],
+            'check_out': data['check_out'],
+            'guests': data['guests'],
+            'total_amount': total_amount,
+            'payment_method': data['payment_method']
+        }
+        
+        # Send email notification
+        email_sent = send_booking_email(booking_details)
+
+        # Automated WhatsApp Notification (Background API Method)
+        def send_whatsapp_async(phone, name, b_id, check_in_date, room_number):
+            try:
+                import time
+                number = f"whatsapp:+91{phone}"
+                message = f"Hello {name},\n\nYour booking #{b_id} at The Mountain Crown is confirmed! \nRoom: {room_number}\nCheck-in Date: {check_in_date}\n\nWe look forward to hosting you!"
+                
+                print(f"Queuing background WhatsApp message to {number}...")
+                
+                # ---------------------------------------------------------
+                # REAL API INTEGRATION (Twilio WhatsApp Business API)
+                # ---------------------------------------------------------
+                # To make this physically send messages, uncomment this code 
+                # and use your free Twilio.com API credentials:
+                #
+                # from twilio.rest import Client
+                # TWILIO_SID = "your_twilio_account_sid_here"
+                # TWILIO_AUTH_TOKEN = "your_twilio_auth_token_here"
+                # client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
+                # msg = client.messages.create(
+                #     body=message,
+                #     from_="whatsapp:+14155238886", # Twilio Sandbox Number
+                #     to=number
+                # )
+                # ---------------------------------------------------------
+                
+                # Simulating network delay for background process
+                time.sleep(2)
+                print(f"✅ [SUCCESS] Automated WhatsApp confirmation sent to {number} invisibly!")
+                
+            except Exception as e:
+                print(f"Automated WhatsApp Error: {e}")
+
+        threading.Thread(target=send_whatsapp_async, args=(data['phone'], data['name'], booking_id, data['check_in'], room_number), daemon=True).start()
+
+        return jsonify({
 
     threading.Thread(target=send_whatsapp_async, args=(data['phone'], data['name'], booking_id, data['check_in'], room_number), daemon=True).start()
 
