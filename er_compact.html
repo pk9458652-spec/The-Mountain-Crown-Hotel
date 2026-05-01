@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compact ER Diagram - Mountain Crown</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #f1f5f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .canvas {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 950px;
+        }
+        .entity {
+            border: 1.5px solid #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            font-size: 11px;
+        }
+        .header {
+            background: #1e293b;
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .row {
+            display: flex;
+            padding: 3px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #fff;
+        }
+        .row:last-child { border-bottom: none; }
+        .key { width: 22px; font-weight: bold; color: #64748b; font-size: 9px; }
+        .name { flex: 1; font-weight: 500; }
+        .type { color: #94a3b8; font-style: italic; font-size: 10px; }
+        .pk { color: #b45309; }
+        .fk { color: #15803d; }
+        
+        .relationships {
+            grid-column: span 3;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #e2e8f0;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .rel-item {
+            color: #475569;
+            font-weight: 500;
+        }
+        .rel-item b { color: #1e293b; }
+    </style>
+</head>
+<body>
+    <div class="canvas">
+        <!-- Room Types -->
+        <div class="entity">
+            <div class="header">ROOM_TYPES</div>
+            <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key"></span><span class="name">name</span><span class="type">TEXT</span></div>
+            <div class="row"><span class="key"></span><span class="name">type</span><span class="type">TEXT (UK)</span></div>
+            <div class="row"><span class="key"></span><span class="name">price</span><span class="type">REAL</span></div>
+            <div class="row"><span class="key"></span><span class="name">max_guests</span><span class="type">INT</span></div>
+        </div>
+
+        <!-- Rooms -->
+        <div class="entity">
+            <div class="header" style="background:#0f766e">ROOMS</div>
+            <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key fk">FK</span><span class="name">type_id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key"></span><span class="name">number</span><span class="type">TEXT</span></div>
+        </div>
+
+        <!-- Customers -->
+        <div class="entity">
+            <div class="header" style="background:#7c3aed">CUSTOMERS</div>
+            <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key"></span><span class="name">name</span><span class="type">TEXT</span></div>
+            <div class="row"><span class="key"></span><span class="name">email</span><span class="type">TEXT</span></div>
+            <div class="row"><span class="key"></span><span class="name">phone</span><span class="type">TEXT</span></div>
+        </div>
+
+        <!-- Bookings -->
+        <div class="entity" style="grid-column: span 1">
+            <div class="header" style="background:#be123c">BOOKINGS</div>
+            <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key fk">FK</span><span class="name">customer_id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key fk">FK</span><span class="name">room_id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key"></span><span class="name">check_in</span><span class="type">DATE</span></div>
+            <div class="row"><span class="key"></span><span class="name">check_out</span><span class="type">DATE</span></div>
+            <div class="row"><span class="key"></span><span class="name">status</span><span class="type">TEXT</span></div>
+        </div>
+
+        <!-- Payments -->
+        <div class="entity">
+            <div class="header" style="background:#a21caf">PAYMENTS</div>
+            <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key fk">FK</span><span class="name">booking_id</span><span class="type">INT</span></div>
+            <div class="row"><span class="key"></span><span class="name">amount</span><span class="type">REAL</span></div>
+            <div class="row"><span class="key"></span><span class="name">method</span><span class="type">TEXT</span></div>
+            <div class="row"><span class="key"></span><span class="name">txn_id</span><span class="type">TEXT</span></div>
+        </div>
+
+        <!-- Feedback & Gallery Group -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="entity">
+                <div class="header" style="background:#d97706">GALLERY</div>
+                <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+                <div class="row"><span class="key"></span><span class="name">filename</span><span class="type">TEXT</span></div>
+            </div>
+            <div class="entity">
+                <div class="header" style="background:#4b5563">FEEDBACK</div>
+                <div class="row"><span class="key pk">PK</span><span class="name">id</span><span class="type">INT</span></div>
+                <div class="row"><span class="key"></span><span class="name">rating</span><span class="type">INT</span></div>
+            </div>
+        </div>
+
+        <div class="relationships">
+            <div class="rel-item"><b>RoomTypes</b> (1) ── (N) <b>Rooms</b></div>
+            <div class="rel-item"><b>Customers</b> (1) ── (N) <b>Bookings</b></div>
+            <div class="rel-item"><b>Bookings</b> (1) ── (1) <b>Payments</b></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DFD</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: white; font-family: Arial, sans-serif; padding: 40px; }
+  h2 { text-align: center; margin-bottom: 30px; font-size: 22px; color: #222; }
+  
+  .dfd-container {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+  .node {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: 13px; font-weight: bold;
+    border: 2px solid #333; padding: 10px 20px;
+  }
+  .oval { border-radius: 50px; background: #d4edff; border-color: #1a6fa8; color: #1a4a70; min-width: 260px; }
+  .rect { background: #fff2cc; border-color: #d6a812; color: #5a4300; min-width: 280px; min-height: 50px; }
+  .rect2 { background: #d5f5e3; border-color: #196f3d; color: #0b4619; min-width: 280px; min-height: 50px; }
+  .diamond-wrap { display: flex; justify-content: center; align-items: center; height: 80px; }
+  .diamond {
+    width: 200px; height: 70px; background: #fde8d8; border: 2px solid #c0392b;
+    transform: rotate(0deg); display:flex; justify-content:center; align-items:center;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    color:#7b241c; font-weight:bold; font-size:12px; text-align:center;
+  }
+  .arrow {
+    width: 2px; height: 36px; background: #333;
+    position: relative; display: flex; justify-content: center;
+  }
+  .arrow::after {
+    content: '▼'; position: absolute; bottom: -10px;
+    color: #333; font-size: 14px; left: -5px;
+  }
+  .row { display: flex; align-items: center; gap: 30px; }
+  .h-arrow { width: 50px; height: 2px; background: #333; position: relative; }
+  .h-arrow::after { content: '▶'; position: absolute; right: -10px; top: -8px; color: #333; font-size:14px; }
+  .label { font-size:11px; color:#555; font-style:italic; }
+  .db {
+    background: #f9d6d2; border: 2px solid #c0392b; color: #7b241c;
+    min-width: 220px; padding: 14px 20px; font-weight: bold; font-size: 13px;
+    border-radius: 6px; text-align: center;
+  }
+</style>
+</head>
+<body>
+<h2>Data Flow Diagram — Level 0</h2>
+<div class="dfd-container">
+
+  <div class="row">
+    <div class="node oval">👤 Guest / User</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="h-arrow"></div>
+      <span class="label">enters request</span>
+    </div>
+    <div class="node rect">🌐 Hotel Website<br><small>(HTML / CSS / JS Frontend)</small></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="h-arrow"></div>
+      <span class="label">API call</span>
+    </div>
+    <div class="node rect2">⚙️ Flask Backend<br><small>(Python 3 Server)</small></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="h-arrow"></div>
+      <span class="label">read/write</span>
+    </div>
+    <div class="db">🗄️ SQLite Database<br><small>hotel.db</small></div>
+  </div>
+
+  <div style="height:40px"></div>
+
+  <div class="row">
+    <div class="node oval">🔐 Admin / Staff</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="h-arrow"></div>
+      <span class="label">login + manage</span>
+    </div>
+    <div class="node rect" style="background:#e8daff;border-color:#7d3c98;color:#4a235a;">📊 Admin Dashboard<br><small>(Passcode Protected)</small></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="h-arrow"></div>
+      <span class="label">API call</span>
+    </div>
+    <div class="node rect2">⚙️ Flask Backend<br><small>(Python 3 Server)</small></div>
+  </div>
+
+</div>
+</body>
+</html>

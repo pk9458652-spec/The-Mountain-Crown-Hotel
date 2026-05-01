@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ER Diagram - Mountain Crown Hotel</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            color: var(--text);
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #0f172a;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .er-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .entity {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+
+        .entity:hover {
+            transform: translateY(-4px);
+        }
+
+        .entity-header {
+            background: #0f172a;
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .entity-type {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .field:last-child { border-bottom: none; }
+
+        .key-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 12px;
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .pk { background: #fef3c7; color: #92400e; }
+        .fk { background: #dcfce7; color: #166534; }
+        .none { color: transparent; }
+
+        .field-name { flex: 1; font-weight: 500; }
+        .field-type { color: #94a3b8; font-size: 0.8rem; font-family: monospace; }
+
+        .relationships {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .relationships h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .rel-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .rel-item:last-child { border-bottom: none; }
+
+        .arrow {
+            font-weight: 800;
+            color: var(--primary);
+            font-family: monospace;
+            padding: 0 10px;
+        }
+
+        .entity-tag {
+            font-weight: 700;
+            color: var(--primary);
+            background: #eff6ff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .description {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .er-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Entity Relationship Diagram</h1>
+            <p class="subtitle">Mountain Crown Hotel Management System Database Schema</p>
+        </header>
+
+        <div class="er-grid">
+            <!-- Room Types -->
+            <div class="entity">
+                <div class="entity-header">
+                    <span>Room Types</span>
+                    <span class="entity-type">Base</span>
+                </div>
+                <div class="field"><span class="key-tag pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">name</span><span class="field-type">TEXT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">type</span><span class="field-type">TEXT (UK)</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">price_per_night</span><span class="field-type">REAL</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">max_guests</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">total_rooms</span><span class="field-type">INT</span></div>
+            </div>
+
+            <!-- Rooms -->
+            <div class="entity">
+                <div class="entity-header">
+                    <span>Rooms</span>
+                    <span class="entity-type">Physical</span>
+                </div>
+                <div class="field"><span class="key-tag pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag fk">FK</span><span class="field-name">room_type_id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">room_number</span><span class="field-type">TEXT</span></div>
+            </div>
+
+            <!-- Customers -->
+            <div class="entity">
+                <div class="entity-header">
+                    <span>Customers</span>
+                    <span class="entity-type">User</span>
+                </div>
+                <div class="field"><span class="key-tag pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">name</span><span class="field-type">TEXT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">email</span><span class="field-type">TEXT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">phone</span><span class="field-type">TEXT</span></div>
+            </div>
+
+            <!-- Bookings -->
+            <div class="entity">
+                <div class="entity-header">
+                    <span>Bookings</span>
+                    <span class="entity-type">Transaction</span>
+                </div>
+                <div class="field"><span class="key-tag pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag fk">FK</span><span class="field-name">customer_id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag fk">FK</span><span class="field-name">room_id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">check_in</span><span class="field-type">DATE</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">check_out</span><span class="field-type">DATE</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">status</span><span class="field-type">TEXT</span></div>
+            </div>
+
+            <!-- Payments -->
+            <div class="entity">
+                <div class="entity-header">
+                    <span>Payments</span>
+                    <span class="entity-type">Finance</span>
+                </div>
+                <div class="field"><span class="key-tag pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag fk">FK</span><span class="field-name">booking_id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">amount</span><span class="field-type">REAL</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">method</span><span class="field-type">TEXT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">txn_id</span><span class="field-type">TEXT</span></div>
+            </div>
+
+            <!-- Feedbacks -->
+            <div class="entity">
+                <div class="entity-header">
+                    <span>Feedback</span>
+                    <span class="entity-type">Social</span>
+                </div>
+                <div class="field"><span class="key-tag pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">name</span><span class="field-type">TEXT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">rating</span><span class="field-type">INT</span></div>
+                <div class="field"><span class="key-tag none">--</span><span class="field-name">message</span><span class="field-type">TEXT</span></div>
+            </div>
+        </div>
+
+        <div class="relationships">
+            <h2>📌 Database Relationships</h2>
+            
+            <div class="rel-item">
+                <span class="entity-tag">Room Types</span>
+                <span class="arrow">1 ──── ∞</span>
+                <span class="entity-tag">Rooms</span>
+                <span class="description">defines physical room units belonging to a category</span>
+            </div>
+
+            <div class="rel-item">
+                <span class="entity-tag">Customers</span>
+                <span class="arrow">1 ──── ∞</span>
+                <span class="entity-tag">Bookings</span>
+                <span class="description">a customer can make multiple bookings over time</span>
+            </div>
+
+            <div class="rel-item">
+                <span class="entity-tag">Rooms</span>
+                <span class="arrow">1 ──── ∞</span>
+                <span class="entity-tag">Bookings</span>
+                <span class="description">a room is assigned to different bookings sequentially</span>
+            </div>
+
+            <div class="rel-item">
+                <span class="entity-tag">Bookings</span>
+                <span class="arrow">1 ──── 1</span>
+                <span class="entity-tag">Payments</span>
+                <span class="description">every booking record has a corresponding payment transaction</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

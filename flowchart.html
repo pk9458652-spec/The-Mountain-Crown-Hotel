@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flowchart</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: white; font-family: Arial, sans-serif; padding: 40px 60px; }
+  h2 { text-align: center; margin-bottom: 30px; font-size: 22px; color: #222; }
+  .fc { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .arrow-down {
+    width: 2px; height: 30px; background: #333;
+    position: relative; display: flex; justify-content: center; align-items: flex-end;
+    margin: 0;
+  }
+  .arrow-down::after { content: '▼'; position: absolute; bottom: -12px; left: -5px; color: #333; font-size: 15px; }
+  .arrow-spacer { height: 16px; }
+
+  /* Shapes */
+  .terminal { /* oval */
+    background: #d4edff; border: 2px solid #1a6fa8; border-radius: 30px;
+    padding: 12px 36px; font-size: 14px; font-weight: bold; color: #1a4a70;
+    min-width: 260px; text-align: center;
+  }
+  .process { /* rectangle */
+    background: #fff9e6; border: 2px solid #d4a017;
+    padding: 12px 24px; font-size: 13px; color: #4a3200;
+    min-width: 280px; text-align: center; border-radius: 4px;
+  }
+  .decision { /* diamond */
+    background: #fde8d8; border: 2px solid #c0392b; color: #7b241c;
+    font-size: 13px; font-weight: bold; text-align: center;
+    min-width: 220px; padding: 14px 20px;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    margin: 10px 0;
+  }
+  .decision-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .side-label { font-size: 11px; color: #888; font-style: italic; }
+  .row-branch { display: flex; align-items: flex-start; gap: 30px; }
+  .branch-no {
+    display: flex; flex-direction: column; align-items: center;
+    margin-top: -10px;
+  }
+</style>
+</head>
+<body>
+<h2>System Process Flowchart — Hotel Booking Flow</h2>
+<div class="fc">
+
+  <div class="terminal">🟢 START</div>
+  <div class="arrow-down"></div><div class="arrow-spacer"></div>
+
+  <div class="process">Guest Visits The Mountain Crown Website</div>
+  <div class="arrow-down"></div><div class="arrow-spacer"></div>
+
+  <div class="process">Guest Enters Check-In & Check-Out Dates</div>
+  <div class="arrow-down"></div><div class="arrow-spacer"></div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%">
+    <div class="decision" style="min-width:260px;padding:18px 30px">Are Rooms Available?</div>
+    <div style="display:flex; align-items:flex-start; gap:60px; margin-top:-10px">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <span class="side-label">❌ No</span>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process" style="background:#fde8d8;border-color:#c0392b;color:#7b241c">Show "No Rooms Available" Message</div>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process" style="background:#fde8d8;border-color:#c0392b;color:#7b241c">Suggest Different Dates</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <span class="side-label">✅ Yes</span>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process">Display Available Room Options</div>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process">Guest Fills in Personal Details<br><small>(Name, Email, Phone)</small></div>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process">Guest Selects "Pay at Hotel"</div>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process" style="background:#d5f5e3;border-color:#196f3d;color:#0b4619">✅ Booking Confirmed &amp; Saved to DB</div>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process" style="background:#d5f5e3;border-color:#196f3d;color:#0b4619">Guest Receives Booking ID</div>
+        <div class="arrow-down" style="height:20px"></div><div class="arrow-spacer"></div>
+        <div class="process" style="background:#d4edff;border-color:#1a6fa8;color:#1a4a70">Admin Dashboard Updates in Real-Time</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:30px"></div>
+  <div class="terminal">🔴 END</div>
+</div>
+</body>
+</html>

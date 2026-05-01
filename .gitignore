@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.env
+venv/
+env/
+
+# Project extras (not needed for deployment)
+*.docx
+*.pptx
+*.pdf
+*.zip
+*.log
+email_errors.log
+PyWhatKit_DB.txt
+scratch/
+hotel_production_build/
+hotel_production_build.zip
+mountain_crown_deployment.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+
+# VS Code
+.vscode/

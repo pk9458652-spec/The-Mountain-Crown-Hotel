@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Full Mermaid ER Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body { background: white; padding: 50px; display: flex; justify-content: center; }
+        #diagram { width: 100%; max-width: 1200px; }
+    </style>
+</head>
+<body>
+    <div id="diagram" class="mermaid">
+erDiagram
+    room_types ||--o{ rooms : "defines"
+    rooms ||--o{ bookings : "is assigned to"
+    customers ||--o{ bookings : "makes"
+    bookings ||--|| payments : "has"
+    
+    room_types {
+        int id PK
+        string name
+        string type UK
+        float price_per_night
+        string description
+        int max_guests
+        string image
+        int total_rooms
+    }
+
+    rooms {
+        int id PK
+        int room_type_id FK
+        string room_number
+    }
+
+    customers {
+        int id PK
+        string name
+        string email
+        string phone
+        timestamp created_at
+    }
+
+    bookings {
+        int id PK
+        int customer_id FK
+        int room_id FK
+        date check_in
+        date check_out
+        int guests
+        int total_nights
+        float total_amount
+        string status
+        timestamp created_at
+    }
+
+    payments {
+        int id PK
+        int booking_id FK
+        float amount
+        string payment_method
+        string transaction_id
+        string status
+        timestamp paid_at
+    }
+
+    gallery {
+        int id PK
+        string filename
+        string title
+        string caption
+        timestamp uploaded_at
+    }
+
+    feedbacks {
+        int id PK
+        string name
+        int rating
+        string message
+        timestamp created_at
+    }
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+</body>
+</html>
