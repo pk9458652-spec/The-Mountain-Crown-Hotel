@@ -65,10 +65,8 @@ Mountain Crown Hotel Team
     except Exception as e:
         error_msg = f"\n[!!! EMAIL ERROR !!!] {datetime.now()}\nRecipients: {booking_details['email']}\nError: {str(e)}\n"
         print(error_msg)
-        with open("email_errors.log", "a") as f:
-            f.write(error_msg)
-            import traceback
-            traceback.print_exc(file=f)
+        import traceback
+        traceback.print_exc()
         return False
 
 def send_cancellation_email(email, name, booking_id):
